@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Promesas Asíncronas</title>
+  </head>
+  <body>
+    <h1>Promesas Asíncronas</h1>
+    <!-- <img src="imgs/loading.gif" width="50" height="50" id="loading"> -->
+    <script>
+      //let mensaje = document.getElementById('mensaje');
+      //let loading = document.getElementById('loading');
+      let productos = [
+        { ref: "q1", descrip: "Monitor", precio: 250000 },
+        { ref: "w1", descrip: "Mouse", precio: 25000 },
+        { ref: "a1", descrip: "Teclado", precio: 450000 },
+        { ref: "b1", descrip: "SSD - 256", precio: 150000 },
+      ];
+
+      function getProducts() {
+        return productos;
+      }
+
+      //console.log(getProducts())
+      // Crear función Asíncrona para invocar la función getProducts
+
+      /*async function allProducts(){
+            let products = await getProducts();
+            //console.log(products)
+            document.write("<ul>")
+            products.map(prod => {
+                document.write("<li>"+prod.ref+" "+prod.descrip+"</li>")
+            })
+            document.write("</ul>")
+        }*/
+
+      let allProducts = async () => {
+        let products = await getProducts();
+        //console.log(products)
+        document.write("<ul>");
+        products.map((prod) => {
+          document.write("<li>" + prod.ref + " " + prod.descrip + "</li>");
+        });
+        document.write("</ul>");
+      };
+      //mensaje.textContent = "Recuperando los productos ...";
+      /*setTimeout(()=>{
+            allProducts();
+        }, 3000)*/
+
+      function searchProduct(refer) {
+        let prod = productos.find((p) => p.ref == refer);
+        /*if (prod != undefined){ // Encontró la referencia
+                return prod
+            }
+            else{
+                return "Referencia NO hallada ...";
+            }*/
+        return prod != undefined ? prod : false;
+      }
+
+      async function findProduct(refsearch) {
+        let prod = await searchProduct(refsearch);
+        document.write(
+          !prod ? "Referencia NO Existe" : prod.descrip + " " + prod.precio
+        );
+        //document.write(prod.descrip + " "+prod.precio);
+      }
+
+      /*let prodbuscar = prompt("Ingrese referencia a buscar ");
+        document.write("Buscando el producto ...");
+        setTimeout(()=>{
+            findProduct(prodbuscar)
+        }, 2000);*/
+
+      fetch("https://jsonplaceholder.typicode.com/users")
+        .then((response) => response.json())
+        .then((data) => {
+          document.write(
+            "<table border='1'><th>Identificación</th><th>Nombre</th><th>Correo Electrónico</th>"
+          );
+          data.forEach((user) => {
+            document.write(
+              "<tr><td>" +
+                user.id +
+                "</td><td>" +
+                user.name +
+                "</td><td>" +
+                user.email +
+                "</td></tr>"
+            );
+          });
+          document.write("</table>");
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculora - DOM</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx"
+      crossorigin="anonymous"
+    />
+    <style>
+      .myImage {
+        margin-top: 20px;
+        width: 100px;
+        height: 100px;
+      }
+      .borderImage {
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Calculadora Básica</h1>
+      <form>
+        <label for="valor1">Valor 1</label>
+        <input
+          type="text"
+          class="form-control"
+          id="valor1"
+          name="valor1"
+          placeholder="Ingrese valor 1"
+          autocomplete="off"
+        />
+        <span id="mensvalor1" style="color: red"></span>
+        <br />
+        <label for="valor2">Valor 2</label>
+        <input
+          type="text"
+          class="form-control"
+          id="valor2"
+          name="valor2"
+          placeholder="Ingrese valor 2"
+          autocomplete="off"
+        />
+        <span id="mensvalor2" style="color: red"></span>
+        <br />
+        <label for="resultado">Resultado</label>
+        <input
+          type="text"
+          class="form-control"
+          id="resultado"
+          name="resultado"
+          readonly
+        />
+        <br />
+        <button type="button" class="btn btn-success" id="btnsumar">+</button>
+        <button type="button" class="btn btn-danger" id="btnrestar">-</button>
+        <button type="button" class="btn btn-warning" id="btnmultip">*</button>
+        <button type="button" class="btn btn-primary" id="btndividir">/</button>
+        <button type="button" class="btn btn-dark" id="btnlimpiar">C</button>
+        <button type="button" class="btn btn-danger" id="btnaddp">
+          Agregar Resultado
+        </button>
+        <button type="button" class="btn btn-warning" id="btndelp">
+          Eliminar Resultado
+        </button>
+        <button type="button" class="btn btn-warning" id="btndelparrafos">
+          Eliminar Parrafos
+        </button>
+        <button type="button" class="btn btn-dark" id="btnempleados">
+          Listar Empleados
+        </button>
+        <button type="button" class="btn btn-success" id="btnGuardar">
+          Guardar Calculo
+        </button>
+        <button type="button" class="btn btn-success" id="btnListarCal">
+          Listar Calculo
+        </button>
+      </form>
+      <div id="lempleados"></div>
+      <div id="parrafos"></div>
+    </div>
+
+    <script>
+      let calculos = [];
+
+      let empleados = [
+        { cedula: "123", nombre: "Juana Gomez", salario: 2500000 },
+        { cedula: "789", nombre: "Mario Bonilla", salario: 6500000 },
+        { cedula: "654", nombre: "Joao Avendaño", salario: 4500000 },
+        { cedula: "367", nombre: "Carlota Muñoz", salario: 1500000 },
+        { cedula: "987", nombre: "Fausto Ramirez", salario: 7500000 },
+      ];
+      let contparrafos = 1;
+      // Referenciar los elementos que tienen id para manipularlos con JS
+      let valor1 = document.getElementById("valor1");
+      let valor2 = document.querySelector("#valor2");
+      let resultado = document.getElementById("resultado");
+      let mensvalor1 = document.querySelector("#mensvalor1");
+      let mensvalor2 = document.querySelector("#mensvalor2");
+      let btnsumar = document.getElementById("btnsumar");
+      let btnrestar = document.getElementById("btnrestar");
+      let btnmultip = document.getElementById("btnmultip");
+      let btndividir = document.getElementById("btndividir");
+      let btnlimpiar = document.getElementById("btnlimpiar");
+      let btnaddp = document.getElementById("btnaddp");
+      let parrafos = document.getElementById("parrafos");
+      let btndelp = document.getElementById("btndelp");
+      let btndelparrafos = document.getElementById("btndelparrafos");
+      let btnempleados = document.getElementById("btnempleados");
+      let lempleados = document.getElementById("lempleados");
+      let btnGuardar = document.getElementById("btnGuardar");
+      let ListarCalculos = document.getElementById("btnListarCal");
+      // Manejo de Eventos con JS
+      // Al posicionarse en el elemento con id valor1, aparezca un mensaje en el span con id mensvalor1
+      valor1.onfocus = () => {
+        mensvalor1.textContent = "Ingresar el valor 1";
+      };
+      valor1.onblur = function () {
+        mensvalor1.textContent = "";
+      };
+      valor2.addEventListener("focus", () => {
+        mensvalor2.textContent = "El valor 2, es obligatorio";
+      });
+      valor2.addEventListener("blur", function () {
+        mensvalor2.textContent = "";
+      });
+
+      /*btnsumar.addEventListener('click',()=>operacionMat("+"))
+      btnrestar.addEventListener('click',()=>operacionMat('-'))
+      btnmultip.addEventListener('click',()=>operacionMat('*'))
+      btndividir.addEventListener('click',()=>operacionMat('/'))*/
+
+      btnsumar.addEventListener("click", () => {
+        if (valor1.value != "") {
+          if (valor2.value != "") {
+            resultado.value = operacionMat(valor1.value, valor2.value, "+");
+            mensvalor1.textContent = "";
+            mensvalor2.textContent = "";
+          } else {
+            mensvalor2.textContent = "Debe ingresar el valor 2 ***";
+          }
+        } else {
+          mensvalor1.textContent = "Debe ingresar el valor 1 ***";
+        }
+      });
+
+      btnrestar.addEventListener("click", () => {
+        resultado.value = operacionMat(valor1.value, valor2.value, "-");
+      });
+      btnmultip.addEventListener("click", () => {
+        resultado.value = operacionMat(valor1.value, valor2.value, "*");
+      });
+      btndividir.addEventListener("click", () => {
+        resultado.value = operacionMat(valor1.value, valor2.value, "/");
+      });
+      btnlimpiar.addEventListener("click", () => {
+        valor1.value = "";
+        valor2.value = "";
+        resultado.value = "";
+        //Enviar el foco a valor 1
+        valor1.focus();
+      });
+      btnaddp.addEventListener("click", () => {
+        // Crear un parrafo (etiqueta p) dentro del elemento con id parrafos
+        let newParrafo = document.createElement("p");
+        // if (contparrafos % 2 != 0){
+        //     newParrafo.setAttribute('style','color:red')
+        // }
+        // else{
+        //     newParrafo.setAttribute('style','color:blue')
+        // }
+        //newParrafo.setAttribute(contparrafos % 2 != 0 ? "'style','color:red'" : "'style','color:blue'")
+        newParrafo.getAttribute(
+          contparrafos % 2 != 0
+            ? newParrafo.setAttribute("style", "color:red")
+            : newParrafo.setAttribute("style", "color:blue")
+        );
+        // Crear un nodo de texto para asignarlo al nodo newParrafo
+        //let newTextParrafo = document.createTextNode("Párrafo ..."+contparrafos);
+        let newTextParrafo = document.createTextNode(resultado.value);
+        // Agregar el texto - newTextParrafo - al elemento con nombre newParrafo
+        newParrafo.appendChild(newTextParrafo);
+        // Agregar el nuevo parrafo - newParrafo - al elemento con id parrafos
+        parrafos.appendChild(newParrafo);
+        contparrafos++;
+      });
+
+      btndelp.addEventListener("click", () => {
+        parrafos.removeChild(parrafos.lastElementChild);
+      });
+      //btndelparrafos.addEventListener('click',()=>{ parrafos.removeChild(parrafos.parentNode.removeChild(parrafos)) })
+      btndelparrafos.addEventListener("click", () => {
+        parrafos.parentNode.removeChild(parrafos);
+      });
+      btnempleados.addEventListener("click", () => {
+        let imagen = document.createElement("img");
+        imagen.setAttribute("src", "./imgs/loading.gif");
+        imagen.setAttribute("title", "Empleados laborando");
+        imagen.classList.add("myImage");
+        imagen.classList.add("borderImage");
+        lempleados.appendChild(imagen);
+        // Definir la tabla con sus encabezados
+        let newTable = document.createElement("table");
+        newTable.setAttribute("border", "1");
+        let newthCedula = document.createElement("th");
+        let newTextthCedula = document.createTextNode("Cedula");
+        let newthNombre = document.createElement("th");
+        let newTextthNombre = document.createTextNode("Nombre");
+        let newthSalario = document.createElement("th");
+        let newTextthSalario = document.createTextNode("Salario");
+        // Agregar los textos a cada encabezado - th -
+        newthCedula.appendChild(newTextthCedula);
+        newthNombre.appendChild(newTextthNombre);
+        newthSalario.appendChild(newTextthSalario);
+        // Agregar los th al table
+        newTable.appendChild(newthCedula);
+        newTable.appendChild(newthNombre);
+        newTable.appendChild(newthSalario);
+        // Agregar la tabla al elemento lempleados
+        lempleados.appendChild(newTable);
+      });
+      //metodo para guardar en un arreglo
+      btnGuardar.addEventListener("click", () => {
+        calculos.push({
+          valor1: valor1.value,
+          valor2: valor2.value,
+          resultado: resultado.value,
+        });
+        console.table(calculos);
+      });
+
+      //crear tabla llame objetoos
+
+      btnListarCal.addEventListener("click", () => {
+        //chequear si el elemneto LEmpleados no tiene hijos
+        if (!lempleados.hasChildNodes()) {
+          let newTable = document.createElement("table");
+          newTable.setAttribute("border", "1");
+          let newthValor1 = document.createElement("th");
+          let newTextthValor1 = document.createTextNode("Valor1");
+          let newthValor2 = document.createElement("th");
+          let newTextthValor2 = document.createTextNode("Valor2");
+          let newthResultado = document.createElement("th");
+          let newTextthResultado = document.createTextNode("Resultado");
+          // Agregar los textos a cada encabezado - th -
+          newthValor1.appendChild(newTextthValor1);
+          newthValor2.appendChild(newTextthValor2);
+          newthResultado.appendChild(newTextthResultado);
+          // Agregar los th al table
+          newTable.appendChild(newthValor1);
+          newTable.appendChild(newthValor2);
+          newTable.appendChild(newthResultado);
+          // Agregar la tabla al elemento btnList
+          //recorrer el objeto calulos pra quue cacda objeto sea una fila en la tabla
+
+          calculos.map((calculo) => {
+            //nueva Fila y celda por cada una de ellas
+
+            let newRow = document.createElement("tr");
+            let newtdValor1 = document.createElement("td");
+            let newTextValor1 = document.createTextNode(calculo.valor1);
+            let newtdValor2 = document.createElement("td");
+            let newTextValor2 = document.createTextNode(calculo.valor2);
+            let newtdResultado = document.createElement("td");
+            let newTextResultado = document.createTextNode(calculo.resultado);
+
+            //agregar a cada elemento de los Tds
+
+            newtdValor1.appendChild(newTextValor1);
+            newtdValor2.appendChild(newTextValor2);
+            newtdResultado.appendChild(newTextResultado);
+
+            //agregar los td
+
+            newRow.appendChild(newtdValor1);
+            newRow.appendChild(newtdValor2);
+            newRow.appendChild(newtdResultado);
+            //agregar los td a la Fila
+
+            newTable.appendChild(newRow);
+          });
+          lempleados.appendChild(newTable);
+        }
+      });
+    </script>
+    <script src="./js/misfunciones.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
